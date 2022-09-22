@@ -16,6 +16,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
   final _modelProvider = ModelProvider();
   bool _isLoading = false;
+  bool _isDataError = false;
 
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
@@ -40,7 +41,18 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       _isLoading = true;
     });
-    await _modelProvider.getNewsData(context);
+    await _modelProvider.getNewsData(context).then((value) {
+      // print("success $value");
+      if (value) {
+        setState(() {
+          _isDataError = false;
+        });
+      } else {
+        setState(() {
+          _isDataError = true;
+        });
+      }
+    });
     setState(() {
       _isLoading = false;
     });
@@ -53,11 +65,15 @@ class _HomeScreenState extends State<HomeScreen> {
         title: const Text('MVVM News App'),
       ),
       body: Center(
-        child: _isLoading
+        child: _isDataError
             ? const Center(
-                child: CircularProgressIndicator(),
+                child: Text('Data error... please check your network...'),
               )
-            : _widgetOptions.elementAt(_selectedIndex),
+            : _isLoading
+                ? const Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : _widgetOptions.elementAt(_selectedIndex),
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
