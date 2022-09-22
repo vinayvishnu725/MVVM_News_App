@@ -59,8 +59,13 @@ class _BreakingNewsScreenState extends State<BreakingNewsScreen> {
       height: SizeConfig.heightMultiplier! * 10,
       width: SizeConfig.widthMultiplier! * 35,
       child: newsData.urlToImage != null
-          ? Image.network(
-              newsData.urlToImage!,
+          ? FadeInImage(
+              height: 100,
+              width: 100,
+              image: NetworkImage(
+                newsData.urlToImage!,
+              ),
+              placeholder: AssetImage('assets/images/imagebg.png'),
               fit: BoxFit.cover,
             )
           : const SizedBox(),
